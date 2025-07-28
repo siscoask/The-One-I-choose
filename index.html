@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One in the Cosmos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+            color: #f0e7ff;
+            background: radial-gradient(circle at center, #1c0a4a 0%, #0f0628 70%, #000000 100%);
+            position: relative;
+        }
+
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(100, 100, 255, 0.1) 0%, transparent 60%);
+        }
+
+        .star {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(200,200,255,0.4) 30%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.7), 0 0 15px rgba(255,255,255,0.3);
+            filter: brightness(1.6);
+            animation: twinkle 3s ease-in-out infinite alternate;
+        }
+
+        .star.small {
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 6px rgba(255,255,255,0.5), 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .star.medium {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 8px rgba(255,255,255,0.6), 0 0 12px rgba(255,255,255,0.3);
+        }
+
+        .star.large {
+            width: 5px;
+            height: 5px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.7), 0 0 15px rgba(255,255,255,0.4);
+        }
+
+        .star.yellowish {
+            background: radial-gradient(circle, rgba(255,240,200,0.9) 0%, rgba(255,220,150,0.4) 30%, transparent 70%);
+        }
+
+        .star.bluish {
+            background: radial-gradient(circle, rgba(200,220,255,0.9) 0%, rgba(150,180,255,0.4) 30%, transparent 70%);
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; transform: scale(0.8); filter: brightness(1); }
+            100% { opacity: 1; transform: scale(1.4); filter: brightness(1.9); }
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            width: 1.5px;
+            height: 1.5px;
+            animation: float 12s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+        }
+
+        .content {
+            position: relative;
+            z-index: 3;
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .title {
+            font-size: clamp(2.2rem, 5.5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 2.5px;
+            margin-bottom: 1.8rem;
+            background: linear-gradient(45deg, #ffe066, #ffb6c1, #d8b4fe, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            animation: titleGlow 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4)); }
+            100% { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7)); }
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+            font-weight: 300;
+            opacity: 0.9;
+            line-height: 1.7;
+            max-width: 85%;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .constellation-section {
+            padding: 3.5rem 1rem;
+            max-width: 95%;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            background: linear-gradient(45deg, #ffe066, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .constellation {
+            position: relative;
+            height: clamp(280px, 55vw, 400px);
+            margin: 3.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .constellation-star {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ffe066 0%, #ffb6c1 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 10;
+            pointer-events: all;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .constellation-star:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        }
+
+        .constellation-star.active {
+            transform: scale(1.8);
+            box-shadow: 0 0 35px rgba(255, 215, 0, 1);
+        }
+
+        .constellation-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9;
+        }
+
+        .star-tooltip {
+            position: absolute;
+            background: rgba(26, 11, 61, 0.95);
+            padding: 1.2rem;
+            border-radius: 15px;
+            max-width: clamp(220px, 85vw, 300px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+            z-index: 15;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .star-tooltip.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .star-tooltip p {
+            font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+            line-height: 1.6;
+            margin: 0;
+            font-style: italic;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .message-section {
+            background: linear-gradient(180deg, rgba(26, 11, 61, 0.4), rgba(26, 11, 61, 0.2));
+            padding: 3.5rem 1rem;
+            margin: 3.5rem 0;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(6px);
+        }
+
+        .message-content {
+            max-width: 85%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .message-text {
+            font-size: clamp(1.3rem, 2.8vw, 2rem);
+            line-height: 1.8;
+            font-style: italic;
+            font-weight: 300;
+            background: linear-gradient(45deg, #ffe066, #ffb6c1, #d8b4fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .signature {
+            font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+            opacity: 0.85;
+            font-weight: 300;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .scroll-text {
+            font-size: clamp(0.85rem, 2.2vw, 1rem);
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .scroll-arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid rgba(255, 215, 0, 0.7);
+            margin: 0 auto;
+        }
+
+        /* Enhanced Responsiveness */
+        @media (max-width: 1024px) {
+            .constellation {
+                height: clamp(220px, 50vw, 320px);
+            }
+            .constellation-star {
+                width: 10px;
+                height: 10px;
+            }
+            .star-tooltip {
+                max-width: clamp(200px, 75vw, 280px);
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 1.8rem;
+            }
+            .constellation {
+                height: clamp(200px, 45vw, 280px);
+            }
+            .constellation-star {
+                width: 8px;
+                height: 8px;
+            }
+            .star-tooltip {
+                max-width: clamp(180px, 70vw, 240px);
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: clamp(2rem, 5vw, 3rem);
+            }
+            .subtitle {
+                font-size: clamp(1rem, 2.5vw, 1.4rem);
+            }
+            .section-title {
+                font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            }
+            .constellation {
+                height: clamp(180px, 40vw, 240px);
+            }
+            .constellation-star {
+                width: 7px;
+                height: 7px;
+            }
+            .star-tooltip {
+                max-width: clamp(160px, 65vw, 220px);
+                padding: 0.7rem;
+            }
+            .message-text {
+                font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            }
+            .scroll-indicator {
+                bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield" id="starfield"></div>
+    <div class="floating-particles" id="particles"></div>
+    
+    <div class="content">
+        <section class="hero-section">
+            <h1 class="title">Chosen One</h1>
+            <p class="subtitle">In the infinite expanse of stars and dreams, there exists a soul so radiant that even the universe pauses to admire her light. This is a constellation dedicated to the one who makes ordinary moments feel like magic.</p>
+            <div class="scroll-indicator">
+                <div class="scroll-text">Explore her constellation</div>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <section class="constellation-section">
+            <h2 class="section-title">Her Constellation</h2>
+            <p style="text-align: center; font-size: clamp(0.95rem, 2.2vw, 1.1rem); opacity: 0.85; margin-bottom: 2.5rem; font-style: italic; text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);">Click each star to discover the qualities that make her shine</p>
+            
+            <div class="constellation" id="constellation">
+                <svg class="constellation-lines"></svg>
+                <div class="constellation-star" data-star="kindness" style="top: 20%; left: 30%;"></div>
+                <div class="constellation-star" data-star="wisdom" style="top: 15%; left: 50%;"></div>
+                <div class="constellation-star" data-star="humor" style="top: 25%; left: 70%;"></div>
+                <div class="constellation-star" data-star="strength" style="top: 45%; left: 25%;"></div>
+                <div class="constellation-star" data-star="grace" style="top: 40%; left: 50%;"></div>
+                <div class="constellation-star" data-star="loyalty" style="top: 50%; left: 75%;"></div>
+                <div class="constellation-star" data-star="creativity" style="top: 70%; left: 35%;"></div>
+                <div class="constellation-star" data-star="compassion" style="top: 75%; left: 65%;"></div>
+                
+                <div class="star-tooltip" id="tooltip"></div>
+            </div>
+        </section>
+
+        <section class="message-section">
+            <div class="message-content">
+                <div class="message-text">
+                    "Even galaxies envy the soul you carry. In a universe of countless stars, you are the one that guides me home. Your light doesn't just shine—it transforms everything it touches into something more beautiful than it was before."
+                </div>
+                <div class="signature">—With infinite love</div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Create starfield with varied colors
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            const screenWidth = window.innerWidth;
+            const numStars = Math.floor(screenWidth < 768 ? 120 : screenWidth < 1024 ? 180 : 250);
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                const size = ['small', 'medium', 'large'][Math.floor(Math.random() * 3)];
+                const color = Math.random() < 0.3 ? 'yellowish' : Math.random() < 0.6 ? 'bluish' : '';
+                star.className = `star ${size} ${color}`;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particleContainer = document.getElementById('particles');
+            const screenWidth = window.innerWidth;
+            const numParticles = Math.floor(screenWidth < 768 ? 40 : screenWidth < 1024 ? 60 : 80);
+            
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 6) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+
+        // Star constellation data
+        const starData = {
+            kindness: "Her kindness flows like starlight through the darkness, touching every soul she encounters with a warmth that lingers long after she's gone. In her presence, the world feels softer, more forgiving.",
+            wisdom: "She carries the wisdom of ancient constellations in her eyes, seeing patterns and truths that others miss. Her insights illuminate paths through life's mysteries with gentle clarity.",
+            humor: "Her laughter is like the music of the spheres—infectious, joyful, and capable of transforming even the heaviest moments into something lighter than air. She finds magic in the mundane.",
+            strength: "Like a mountain that weathers every storm while remaining beautiful, her strength is both fierce and graceful. She stands tall not to intimidate, but to shelter those she loves.",
+            grace: "She moves through life with the elegance of a shooting star—purposeful, beautiful, and leaving trails of wonder in her wake. Every gesture carries an inherent poetry.",
+            loyalty: "Her loyalty burns steady as the North Star, a constant beacon that friends can navigate by. Through every season of life, she remains true, reliable, unwavering.",
+            creativity: "Her imagination paints new worlds into existence with every breath. She sees possibilities where others see limitations, creating beauty from the simplest materials.",
+            compassion: "Her heart is vast as the cosmos itself, with room for every wounded soul and broken dream. She doesn't just feel others' pain—she transforms it into healing."
+        };
+
+        // Constellation interaction and lines
+        function initConstellation() {
+            const stars = document.querySelectorAll('.constellation-star');
+            const tooltip = document.getElementById('tooltip');
+            const svg = document.querySelector('.constellation-lines');
+            
+            // Define constellation connections
+            const connections = [
+                ['kindness', 'wisdom'],
+                ['wisdom', 'humor'],
+                ['humor', 'loyalty'],
+                ['loyalty', 'compassion'],
+                ['compassion', 'creativity'],
+                ['creativity', 'strength'],
+                ['strength', 'grace'],
+                ['grace', 'kindness']
+            ];
+
+            // Draw constellation lines
+            function drawLines() {
+                svg.innerHTML = '';
+                const constellationRect = document.getElementById('constellation').getBoundingClientRect();
+                
+                connections.forEach(([startId, endId]) => {
+                    const start = document.querySelector(`.constellation-star[data-star="${startId}"]`);
+                    const end = document.querySelector(`.constellation-star[data-star="${endId}"]`);
+                    if (!start || !end) return;
+
+                    const startRect = start.getBoundingClientRect();
+                    const endRect = end.getBoundingClientRect();
+                    const x1 = (startRect.left - constellationRect.left + startRect.width / 2) / constellationRect.width * 100;
+                    const y1 = (startRect.top - constellationRect.top + startRect.height / 2) / constellationRect.height * 100;
+                    const x2 = (endRect.left - constellationRect.left + endRect.width / 2) / constellationRect.width * 100;
+                    const y2 = (endRect.top - constellationRect.top + endRect.height / 2) / constellationRect.height * 100;
+
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', `${x1}%`);
+                    line.setAttribute('y1', `${y1}%`);
+                    line.setAttribute('x2', `${x2}%`);
+                    line.setAttribute('y2', `${y2}%`);
+                    line.setAttribute('stroke', 'rgba(255, 215, 0, 0.3)');
+                    line.setAttribute('stroke-width', '1');
+                    line.setAttribute('stroke-dasharray', '5,5');
+                    svg.appendChild(line);
+                });
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const starType = e.target.getAttribute('data-star');
+                    const starRect = e.target.getBoundingClientRect();
+                    const constellationRect = document.getElementById('constellation').getBoundingClientRect();
+                    
+                    stars.forEach(s => s.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    tooltip.innerHTML = `<p>${starData[starType]}</p>`;
+                    
+                    const left = starRect.left - constellationRect.left;
+                    const top = starRect.top - constellationRect.top;
+                    
+                    let tooltipLeft = left - (window.innerWidth < 768 ? 110 : 150);
+                    let tooltipTop = top + 25;
+                    
+                    if (tooltipLeft < 10) tooltipLeft = 10;
+                    if (tooltipLeft + (window.innerWidth < 768 ? 220 : 300) > constellationRect.width) {
+                        tooltipLeft = constellationRect.width - (window.innerWidth < 768 ? 210 : 290);
+                    }
+                    
+                    tooltip.style.left = tooltipLeft + 'px';
+                    tooltip.style.top = tooltipTop + 'px';
+                    tooltip.classList.add('visible');
+                });
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('constellation-star')) {
+                    tooltip.classList.remove('visible');
+                    stars.forEach(s => s.classList.remove('active'));
+                }
+            });
+
+            drawLines();
+            window.addEventListener('resize', drawLines);
+        }
+
+        // Smooth scrolling
+        function initSmoothScroll() {
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.scroll-indicator')) {
+                    document.querySelector('.constellation-section').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+            initConstellation();
+            initSmoothScroll();
+        });
+
+        // Parallax effect with optimized performance
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (Math.abs(scrolled - lastScroll) > 5) {
+                const rate = scrolled * -0.4;
+                document.getElementById('starfield').style.transform = `translateY(${rate}px)`;
+                document.getElementById('particles').style.transform = `translateY(${rate * 0.6}px)`;
+                lastScroll = scrolled;
+            }
+        });
+
+        // Resize handler to adjust stars and particles
+        window.addEventListener('resize', () => {
+            document.getElementById('starfield').innerHTML = '';
+            document.getElementById('particles').innerHTML = '';
+            createStars();
+            createParticles();
+        });
+    </script>
+</body>
+</html>
